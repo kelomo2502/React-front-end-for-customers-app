@@ -31,11 +31,11 @@ const Customer = () => {
           // navigate('/404')
           // return 404 component
           setNotFound(true);
-        }
+        } else if (response.status === 401) navigate('/login');
         if (!response.ok) {
           throw new Error('Something went wrong, try again latter')
         }
-          
+
         return response.json();
       })
       .then((data) => {
@@ -47,7 +47,8 @@ const Customer = () => {
       })
   }, []);
 
-  function updateCustomer() {
+  function updateCustomer(e) {
+    e.preventDefault();
     const url = baseUrl + 'api/customers/' + id;
     fetch(url, {
       method: 'POST',
@@ -66,34 +67,53 @@ const Customer = () => {
         setError(undefined);
       })
       .catch((e) => {
-      setError(e.message) 
+        setError(e.message)
       })
   }
 
   return (
+
     <>
       {notFound ? <NotFound /> : null}
       {customer ? (
-        <div>
-          <p className="m-2 block px-2">{tempCustomer.id}</p>
-          <input
-            className="m-2 block px-2"
-            type="text"
-            value={tempCustomer.name}
-            onChange={(e) => {
-              setChanged(true);
-              setTempCustomer({ ...tempCustomer, name: e.target.value });
-            }}
-          />
-          <input
-            className="m-2 block px-2"
-            type="text"
-            value={tempCustomer.industry}
-            onChange={(e) => {
-              setChanged(true);
-              setTempCustomer({ ...tempCustomer, industry: e.target.value });
-            }}
-          />
+        <div className='p-3'>
+          <p id="name">{tempCustomer.id}</p>
+          <div className="md:flex md:items-center mb-6">
+            <form id='customer' onSubmit={updateCustomer}>
+              <div className="md:flex md:items-center mb-6">
+                <div className="md:w-1/3">
+                  <label htmlFor="name">Name</label>
+                </div>
+                <div className="md:w-2/3">
+                  <input id='name'
+                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                    type="text"
+                    value={tempCustomer.name}
+                    onChange={(e) => {
+                      setChanged(true);
+                      setTempCustomer({ ...tempCustomer, name: e.target.value });
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="md:flex md:items-center mb-6">
+                <div className="md:w-1/3">
+                  <label htmlFor='industry'>Industry</label>
+                </div>
+                <div className="md:w-2/3">
+                  <input id='industry'
+                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                    type="text"
+                    value={tempCustomer.industry}
+                    onChange={(e) => {
+                      setChanged(true);
+                      setTempCustomer({ ...tempCustomer, industry: e.target.value });
+                    }}
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
           {changed ? (
             <>
               <button
@@ -101,11 +121,11 @@ const Customer = () => {
                   setTempCustomer({ ...customer });
                   setChanged(false);
                 }}
-                className="m-2"
+                className="shadow bg-yellow-600 hover:bg-yellow-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
               >
                 Cancel
               </button>
-              <button onClick={updateCustomer} className="m-2">
+              <button form='customer' className="mx-2 shadow bg-green-600 hover:bg-green-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" >
                 Save
               </button>
             </>
@@ -127,19 +147,19 @@ const Customer = () => {
                   setError(e.message)
                 });
             }}
-            className="shadow bg-red-600 hover:bg-gray-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded my-2"
-          >
+            className="shadow bg-red-600 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">
             Delete
           </button>
         </div>
       ) : null}
-      {error ? <p>{error}</p>:null}
-      <Link
-        to="/customers"
-        className="shadow bg-gray-600 hover:bg-gray-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-      >
-        Go back
-      </Link>
+      {error ? <p>{error}</p> : null}
+      <div className='p-3'>
+        <Link className="no-underline shadow bg-gray-600 hover:bg-gray-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+          to="/customers"
+        >
+          Back
+        </Link>
+      </div>
 
     </>
   );

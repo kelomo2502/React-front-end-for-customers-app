@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link} from 'react-router-dom'
+import { Link, useNavigate} from 'react-router-dom'
 import AddCustomer from '../components/AddCustomer';
 import { baseUrl } from '../shared';
 
@@ -7,6 +7,7 @@ import { baseUrl } from '../shared';
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   function toggleShow() {
     setShow(!show)
@@ -14,7 +15,12 @@ const Customers = () => {
 
   useEffect(() => {
     fetch(baseUrl + 'api/customers')
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 401) {
+          navigate('/login')
+        }
+        return response.json()
+      })
       .then((data) => {
         setCustomers(data.customers)
       })
