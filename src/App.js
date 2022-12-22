@@ -1,8 +1,4 @@
-import Employee from "./components/Employee";
-import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import AddEmployee from "./components/AddEmployee";
-import EditEmployee from "./components/EditEmployee";
+import { createContext, useState } from "react";
 import Header from "./components/Header";
 import Employees from "./pages/Employees";
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
@@ -14,24 +10,29 @@ import Customer from "./pages/Customer";
 import Login from "./pages/Login";
 
 
-function App() {
+export const LoginContext = createContext();
 
+function App() {
+  const [loggedIn, setLoggedIn] = useState(true);
   return (
     
-    <BrowserRouter>
-      <Header>
-        <Routes>
-          <Route path="/employees" element={<Employees />} />
-          <Route path="/dictionary" element={<Dictionary />} />
-          <Route path="/dictionary/:search" element={<Definition />} />
-          <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
-          <Route path="/login" element={<Login/> } />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/customers/:id" element={<Customer />} />
-        </Routes>
-      </Header>
+    <LoginContext.Provider value={[loggedIn, setLoggedIn]}>
+      <BrowserRouter>
+        <Header>
+          <Routes>
+            <Route path="/employees" element={<Employees />} />
+            <Route path="/dictionary" element={<Dictionary />} />
+            <Route path="/dictionary/:search" element={<Definition />} />
+            <Route path="/404" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/customers/:id" element={<Customer />} />
+          </Routes>
+        </Header>
       </BrowserRouter>
+    </LoginContext.Provider>
+    
     
     
   )

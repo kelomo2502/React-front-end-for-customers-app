@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Link, useNavigate, useLocation} from 'react-router-dom'
 import AddCustomer from '../components/AddCustomer';
 import { baseUrl } from '../shared';
+import { LoginContext } from '../App';
 
 
 const Customers = () => {
+  const [loggedIn, setLoggedIn] = useContext(LoginContext);
   const [customers, setCustomers] = useState([]);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ const Customers = () => {
     })
       .then((response) => {
         if (response.status === 401) {
+          setLoggedIn(false)
           navigate('/login', {
             state: {
               previousUrl : location.pathname,
