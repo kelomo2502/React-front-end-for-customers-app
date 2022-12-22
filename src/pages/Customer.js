@@ -24,14 +24,21 @@ const Customer = () => {
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/customers/' + id)
+    fetch(('http://localhost:8000/api/customers/' + id), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('access'),
+      }
+    })
       .then((response) => {
         if (response.status === 404) {
           // navigate to 404 page
           // navigate('/404')
           // return 404 component
           setNotFound(true);
-        } else if (response.status === 401) navigate('/login');
+        } else if (response.status === 401) {
+          navigate('/login');
+        }
         if (!response.ok) {
           throw new Error('Something went wrong, try again latter')
         }
@@ -54,10 +61,14 @@ const Customer = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('access')
       },
       body: JSON.stringify(tempCustomer),
     })
       .then((response) => {
+        if (response.status === 401) {
+          navigate('/login');
+        }
         if (!response.ok) throw new Error("Something went wrong");
         return response.json();
       })
@@ -135,9 +146,15 @@ const Customer = () => {
               const url = baseUrl + 'api/customers/' + id;
               fetch(url, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + localStorage.getItem('access')
+                },
               })
                 .then((response) => {
+                  if (response.status === 401) {
+                    navigate('/login');
+                  }
                   if (!response.ok) {
                     throw new Error('Something went wrong');
                   }

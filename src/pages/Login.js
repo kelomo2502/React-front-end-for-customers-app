@@ -21,7 +21,9 @@ const Login = () => {
     }).then((response) => {
       return response.json();
     }).then((data) => {
-      console.log(data)
+      localStorage.setItem('access', data.access);
+      localStorage.setItem('refresh', data.refresh);
+      console.log(localStorage)
     }).catch((e)=>{})
   }
   return (

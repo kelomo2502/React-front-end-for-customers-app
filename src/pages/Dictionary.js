@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+
 import DefinitionSearch from '../components/DefinitionSearch';
 
 const Dictionary = () => {

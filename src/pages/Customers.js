@@ -14,7 +14,12 @@ const Customers = () => {
   }
 
   useEffect(() => {
-    fetch(baseUrl + 'api/customers')
+    fetch((baseUrl + 'api/customers'), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization:'Bearer ' + localStorage.getItem('access')
+      }
+    })
       .then((response) => {
         if (response.status === 401) {
           navigate('/login')
@@ -24,7 +29,7 @@ const Customers = () => {
       .then((data) => {
         setCustomers(data.customers)
       })
-  }, [])
+  },[navigate])
 
   function addCustomerFn(name, industry) {
     const data = {name:name, industry:industry}
@@ -32,7 +37,8 @@ const Customers = () => {
     fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('access')
       },
       body: JSON.stringify(data),
     }).then((response) => {
