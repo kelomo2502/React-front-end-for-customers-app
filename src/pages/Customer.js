@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import NotFound from '../components/NotFound';
 import { baseUrl } from '../shared';
 
@@ -11,6 +11,7 @@ const Customer = () => {
   const [tempCustomer, setTempCustomer] = useState();
   const [changed, setChanged] = useState(false);
   const [error, setError] = useState();
+  const location = useLocation();
 
   useEffect(() => {
     if (!customer) return;
@@ -37,7 +38,11 @@ const Customer = () => {
           // return 404 component
           setNotFound(true);
         } else if (response.status === 401) {
-          navigate('/login');
+          navigate('/login', {
+            state: {
+              previousUrl: location.pathname
+            }
+          });
         }
         if (!response.ok) {
           throw new Error('Something went wrong, try again latter')
@@ -67,7 +72,11 @@ const Customer = () => {
     })
       .then((response) => {
         if (response.status === 401) {
-          navigate('/login');
+          navigate('/login', {
+            state: {
+              previousUrl: location.pathname
+            }
+          });
         }
         if (!response.ok) throw new Error("Something went wrong");
         return response.json();
@@ -153,7 +162,11 @@ const Customer = () => {
               })
                 .then((response) => {
                   if (response.status === 401) {
-                    navigate('/login');
+                    navigate('/login', {
+                      state: {
+                        previousUrl: location.pathname
+                      }
+                    });
                   }
                   if (!response.ok) {
                     throw new Error('Something went wrong');
